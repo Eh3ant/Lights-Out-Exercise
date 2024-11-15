@@ -1,0 +1,10 @@
+.Board {
+  margin: 20px auto;
+  border-collapse: collapse;
+}
+
+.Board-winner {
+  font-size: 24px;
+  color: green;
+  text-align: center;
+}
