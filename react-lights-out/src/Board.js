@@ -30,27 +30,47 @@ import "./Board.css";
 function Board({ nrows, ncols, chanceLightStartsOn }) {
   const [board, setBoard] = useState(createBoard());
 
+  // Tracks if the game has started
+  const [gameStarted, setGameStarted] = useState(false);
+
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
+
+
   function createBoard() {
-    let initialBoard = [];
-    // TODO: create array-of-arrays of true/false values
-    for (let y = 0; y < nrows; y++) {
-      let row = [];
-      for (let x = 0; x < ncols; x++) {
-        row.push(Math.random() < chanceLightStartsOn)
+    let initialBoard;
+    let allOff;
+
+    do {
+      initialBoard = [];
+      allOff = true;
+
+      for (let y = 0; y < nrows; y++) {
+        let row = [];
+        for (let x = 0; x < ncols; x++) {
+          const isLit = Math.random() < chanceLightStartsOn;
+          row.push(isLit);
+          if (isLit) {
+            allOff = false;
+          }
+        }
+        initialBoard.push(row);
       }
-      initialBoard.push(row)
-    }
+    } while (allOff); // Regenerate the board if all cells are off
     return initialBoard;
   }
 
+
   function hasWon() {
     // TODO: check the board in state to determine whether the player has won.
+    console.log("Checking win condition for board:", board);
     return board.every(row => row.every(cell => !cell));
 
   }
 
   function flipCellsAround(coord) {
+
+    // Set gameStarted to true on the first click
+    if (!gameStarted) setGameStarted(true);
     const flipCell = (y, x, boardCopy) => {
       // if this coord is actually on board, flip it
 
@@ -58,6 +78,8 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
         boardCopy[y][x] = !boardCopy[y][x];
       }
     };
+
+
     setBoard(oldBoard => {
       const [y, x] = coord.split("-").map(Number);
 
